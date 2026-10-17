@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#064e3b">
+    <title>Santri Fest 2026</title>
+    
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="233599.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: { brand: { 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 800: '#065f46', 900: '#064e3b' } },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                        'zoom-in': 'zoomIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'page-enter': 'pageEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        zoomIn: { '0%': { opacity: '0', transform: 'scale(0.95)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+                        pageEnter: { '0%': { opacity: '0', transform: 'translateY(25px) scale(0.96)' }, '100%': { opacity: '1', transform: 'translateY(0) scale(1)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #022c22; color: #f8fafc; overflow: hidden; overscroll-behavior-y: none; }
+        
+        /* Dynamic Background Layer */
+        .bg-dynamic { position: fixed; inset: 0; z-index: -2; background-size: cover; background-position: center; transition: background-image 1s ease-in-out; }
+        .bg-overlay { position: fixed; inset: 0; z-index: -1; background: linear-gradient(135deg, rgba(2,44,34,0.95) 0%, rgba(6,78,59,0.85) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+
+        /* Liquid Glassmorphism */
+        .glass { background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .glass-strong { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.15); }
+        .glass-card { background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 8px 30px rgba(0,0,0,0.4); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4); border-color: rgba(52, 211, 153, 0.6); }
+        
+        .glass-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.25); color: white; transition: all 0.3s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .glass-input:focus { background: rgba(0, 0, 0, 0.8); border-color: rgba(52, 211, 153, 0.9); outline: none; box-shadow: 0 0 25px rgba(52, 211, 153, 0.4); }
+        
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .loader-ring { display: inline-block; width: 24px; height: 24px; }
+        .loader-ring:after { content: " "; display: block; width: 20px; height: 20px; margin: 2px; border-radius: 50%; border: 2px solid #fff; border-color: #fff transparent #fff transparent; animation: loader-ring 1.2s linear infinite; }
+        @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .chat-bubble-right { border-radius: 20px 20px 4px 20px; background: linear-gradient(135deg, #10b981, #059669); }
+        .chat-bubble-left { border-radius: 20px 20px 20px 4px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); }
+    </style>
+</head>
+<body class="antialiased h-screen overflow-hidden selection:bg-brand-500 selection:text-white">
+    <div id="root" class="h-full relative z-10"></div>
+
+    <!-- PWA Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('PWA Service Worker registered.', reg);
+                }).catch(err => {
+                    console.log('PWA Registration failed: ', err);
+                });
+            });
+        }
+    </script>
+
+    <script type="text/babel">
+        // ==========================================
+        // 1. KONFIGURASI API & MOCK DATABASE
+        // ==========================================
+        const API_URL = "https://script.google.com/macros/s/AKfycbz6GamHib3ux9wx7VoIemrJ9eIq3139nbsJzF0sbK2bqggxkbPQr65swk0lLST2fpX_Fw/exec";
+        const { useState, useEffect, useRef, createContext, useContext } = React;
+
+        const defaultSettings = {
+            logoUrl: '233599.png', 
+            bgUrl: 'https://images.unsplash.com/photo-1580665306631-f182fc6bf130?q=80&w=2938&auto=format&fit=crop',
+            loginTitle: 'Santri Fest 2026'
+        };
+
+        const SettingsContext = createContext();
+
+        let mockUsers = [
+            { username: 'admin', name: 'Administrator', role: 'ADMIN', status: 'approved', createdAt: '2026-09-01' },
+            { username: 'peserta', name: 'Fulan Santoso', role: 'PESERTA', status: 'approved', createdAt: '2026-10-01', competition: 'mqk', instansi: 'PP. Tebuireng' },
+            { username: 'peserta2', name: 'Ahmad Dahlan', role: 'PESERTA', status: 'approved', createdAt: '2026-10-02', competition: 'fesban', instansi: 'Grup Syubbanul' },
+            { username: 'peserta3', name: 'Siti Aminah', role: 'PESERTA', status: 'approved', createdAt: '2026-10-03', competition: 'dai', instansi: 'MI Al-Huda' },
+            { username: 'peserta4', name: 'Zaki Yamani', role: 'PESERTA', status: 'approved', createdAt: '2026-10-04', competition: 'mqk', instansi: 'PP. Al-Huda' },
+            { username: 'peserta5', name: 'Grup Al-Banjari', role: 'PESERTA', status: 'approved', createdAt: '2026-10-05', competition: 'fesban', instansi: 'PP. Darussalam' },
+            { username: 'peserta6', name: 'Aisyah Putri', role: 'PESERTA', status: 'approved', createdAt: '2026-10-06', competition: 'dai', instansi: 'SDIT Darul Falah' },
+            { username: 'tim_futsal1', name: 'FC Lirboyo', role: 'PESERTA', status: 'approved', createdAt: '2026-10-07', competition: 'futsal', instansi: 'PP. Lirboyo' },
+            { username: 'tim_futsal2', name: 'Tebuireng United', role: 'PESERTA', status: 'approved', createdAt: '2026-10-08', competition: 'futsal', instansi: 'PP. Tebuireng' },
+            { username: 'juri1', name: 'Ust. Hasyim', role: 'JURI', status: 'approved', createdAt: '2026-10-02' }
+        ];
+
+        let mockPermissions = [
+            { role: 'PESERTA', menu: 'Home', enabled: true }, { role: 'PESERTA', menu: 'Lomba', enabled: true }, { role: 'PESERTA', menu: 'Juara', enabled: true },
+            { role: 'JURI', menu: 'Home', enabled: true }, { role: 'JURI', menu: 'Lomba', enabled: true }, { role: 'JURI', menu: 'Penilaian', enabled: true }, { role: 'JURI', menu: 'Juara', enabled: true },
+        ];
+
+        let mockChats = { mqk: [], fesban: [], dai: [], futsal: [] };
+        let mockScores = {};
+
+        const fetchApi = async (action, data = {}) => {
+            try {
+                const response = await fetch(API_URL, { 
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action, ...data }) 
+                });
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message);
+                return result.data;
+            } catch (error) { 
+                console.warn("Menggunakan simulasi lokal (Fallback):", error);
+                return mockBackend(action, data); 
+            }
+        };
+
+        const mockBackend = async (action, data) => {
+            await new Promise(r => setTimeout(r, 400)); 
+            
+            if (action === 'login') {
+                const user = mockUsers.find(u => u.username === data.username);
+                if (!user) throw new Error("Username atau password salah.");
+                if (data.username === 'admin' && data.password !== 'admin123' && data.password !== 'SantriFest2026!') throw new Error("Password salah. (Hint: admin123)");
+                if (user.status === 'pending') throw new Error("Akun belum disetujui admin.");
+                if (user.status !== 'approved') throw new Error("Akun dinonaktifkan.");
+                
+                let userMenus = user.role === 'ADMIN' ? ['Home', 'Lomba', 'Penilaian', 'Juara', 'Pengguna', 'Pengaturan'] : mockPermissions.filter(p => p.role === user.role && p.enabled).map(p => p.menu);
+                return { token: `token_${user.username}`, username: user.username, name: user.name, role: user.role, status: user.status, menus: userMenus };
+            }
+            if (action === 'register') {
+                if (mockUsers.find(u => u.username === data.username)) throw new Error("Username sudah ada.");
+                mockUsers.push({ username: data.username, name: data.name, role: 'PESERTA', status: 'pending', createdAt: new Date().toISOString() });
+                return { message: "Pendaftaran berhasil. Tunggu persetujuan admin." };
+            }
+            if (action === 'getUsers') return mockUsers;
+            if (action === 'adminSetUserStatus') {
+                const userIndex = mockUsers.findIndex(u => u.username === data.username);
+                if (userIndex > -1) mockUsers[userIndex].status = data.status;
+                return { message: "Status berhasil diubah." };
+            }
+            if (action === 'getChats') return mockChats[data.lombaId] || [];
+            if (action === 'sendMessage') {
+                const newMsg = { id: Date.now(), sender: data.username, text: data.text, image: data.image, video: data.video, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), isAdmin: data.role === 'ADMIN' };
+                if(!mockChats[data.lombaId]) mockChats[data.lombaId] = [];
+                mockChats[data.lombaId].push(newMsg);
+                return newMsg;
+            }
+            if (action === 'submitScore') {
+                mockScores[`${data.username}-${data.competition}`] = data.score;
+                return { message: "Nilai berhasil disimpan" };
+            }
+            if (action === 'getWinners') {
+                return {
+                    mqk: [
+                        { name: 'Fulan Santoso', instansi: 'PP. Tebuireng', score: 95, rank: 1 },
+                        { name: 'Zaki Yamani', instansi: 'PP. Al-Huda', score: 90, rank: 2 },
+                        { name: 'Rizal Fahmi', instansi: 'PP. Darussalam', score: 85, rank: 3 }
+                    ],
+                    fesban: [
+                        { name: 'Ahmad Dahlan', instansi: 'Grup Syubbanul', score: 92, rank: 1 },
+                        { name: 'Grup Al-Banjari', instansi: 'PP. Darussalam', score: 88, rank: 2 },
+                        { name: 'Nada Islami', instansi: 'Grup Umum', score: 85, rank: 3 }
+                    ],
+                    dai: [
+                        { name: 'Siti Aminah', instansi: 'MI Al-Huda', score: 88, rank: 1 },
+                        { name: 'Aisyah Putri', instansi: 'SDIT Darul Falah', score: 85, rank: 2 },
+                        { name: 'Budi Santoso', instansi: 'SDN 1 Malang', score: 80, rank: 3 }
+                    ],
+                    futsal: [
+                        { name: 'FC Lirboyo', instansi: 'PP. Lirboyo', score: 12, rank: 1 },
+                        { name: 'Tebuireng United', instansi: 'PP. Tebuireng', score: 9, rank: 2 },
+                        { name: 'Sidogiri FC', instansi: 'PP. Sidogiri', score: 7, rank: 3 }
+                    ]
+                };
+            }
+            return { message: "Success" };
+        };
+
+        // ==========================================
+        // 2. DATA JUKNIS & SKEMA PENILAIAN LOMBA
+        // ==========================================
+        const juknisData = {
+            mqk: {
+                title: "Musabaqah Qira'atul Kutub",
+                icon: "fa-book-open", color: "from-blue-500 to-indigo-600",
+                slides: [
+                    { t: "Tema Kegiatan", c: ["Menumbuhkan Generasi Santri yang Berilmu, Berakhlak, dan Mampu Memahami Khazanah Keislaman melalui Kajian Kitab Kuning."] },
+                    { t: "Ketentuan Peserta", c: ["Peserta merupakan santri/pelajar dari pondok pesantren, madrasah, sekolah Islam, atau lembaga pendidikan Islam.", "Mengikuti lomba secara perorangan (individu).", "Maksimal berusia 15 tahun.", "Wajib mendapatkan rekomendasi atau izin dari lembaga/pondok pesantren masing-masing.", "Setiap lembaga hanya dapat mengirimkan maksimal 1 (satu) peserta.", "Wajib melakukan registrasi sesuai ketentuan panitia.", "Wajib membawa kartu identitas atau bukti pendaftaran pada saat pelaksanaan lomba.", "Wajib mengikuti seluruh ketentuan yang telah ditetapkan oleh panitia."] },
+                    { t: "Materi Lomba", c: ["Materi lomba menggunakan Kitab Matan Fathul Qarib (Kitab Toharoh & Sholat).", "Pembacaan teks kitab (qira'ah).", "Penerjemahan teks kitab.", "Pemahaman kandungan teks.", "Penjelasan maksud dari ibarah yang dibaca.", "Analisis nahwu dan sharaf pada bagian tertentu apabila diperlukan.", "Pemahaman istilah-istilah fikih yang terdapat dalam teks.", "Catatan: Batas bab atau halaman ditetapkan lebih lanjut oleh panitia."] },
+                    { t: "Teknis Pelaksanaan", c: ["Persiapan: Registrasi ulang, technical meeting, dan mendapatkan nomor urut.", "Wajib hadir paling lambat 30 menit sebelum perlombaan dimulai.", "Pelaksanaan: Dipanggil berdasarkan nomor peserta, mengambil bagian teks dari dewan juri.", "Peserta wajib: Membaca teks kitab dengan benar, memberi makna/terjemah, menjelaskan maksud ibarah, dan menjawab pertanyaan juri.", "Waktu: Alokasi waktu setiap peserta maksimal 10 menit."] },
+                    { t: "Sistem Penilaian", c: ["Ketepatan membaca ibarah (Harakat, makhraj, waqaf) (30%)", "Ketepatan makna/terjemah (25%)", "Pemahaman isi dan maksud ibarah (25%)", "Kemampuan menjawab pertanyaan (10%)", "Kelancaran dan adab (Tenang, percaya diri, kesopanan) (10%)"] },
+                    { t: "Tata Tertib & Sanksi", c: ["Hadir tepat waktu. Mengenakan pakaian sopan, rapi, sesuai ketentuan lembaga.", "Menjaga ketertiban dan menghormati dewan juri serta panitia.", "Dilarang membawa alat bantu tak resmi & dilarang menerima bantuan pihak lain.", "Dipanggil 3 kali tidak hadir tanpa keterangan dapat dinyatakan gugur.", "Sanksi pelanggaran: Teguran, pengurangan nilai, pemberhentian, hingga diskualifikasi."] },
+                    { t: "Penentuan Juara", c: ["Juara ditentukan berdasarkan jumlah nilai akhir tertinggi (Juara I, II, dan III).", "Jika nilai sama, penentuan berdasarkan aspek penilaian dengan bobot lebih tinggi.", "Pemenang mendapatkan Uang Pembinaan, Sertifikat dan Trofi."] }
+                ]
+            },
+            fesban: {
+                title: "Festival Banjari (FESBAN)",
+                icon: "fa-drum", color: "from-emerald-500 to-teal-600",
+                slides: [
+                    { t: "Tema & Kategori", c: ["Tema: Melestarikan Seni Islami, Menumbuhkan Generasi Santri yang Kreatif, Religius, dan Berprestasi.", "Kategori Umum: Pondok pesantren, Madrasah/sekolah, Organisasi/komunitas, Grup banjari umum.", "Belum pernah menjuarai Fesban tingkat provinsi ataupun nasional.", "Toleransi maksimal 2 orang anggota ex-juara.", "Grup Al-Banjari (putra/putri/campuran) wilayah Malang Raya.", "Wajib melakukan registrasi, membawa bukti daftar, dan menunjuk 1 official."] },
+                    { t: "Materi & Alat Musik", c: ["Satu grup terdiri dari maksimal 10 orang (5 Vokalis, 4 Penabuh Terbang, 1 Penabuh Bass).", "Wajib membawakan 2 (dua) lagu bebas dan jingle (kata kunci Al-Rifa'ie 2 dan HSN).", "Materi berupa Shalawat, Lagu religi Islami, atau Syair/Qasidah/Munajat bernuansa Islami.", "Wajib menyerahkan lirik lagu beserta judulnya kepada panitia sebelum tampil.", "Alat musik: Al-banjari murni (dibawa sendiri oleh peserta). Panitia hanya menyediakan sound system."] },
+                    { t: "Teknis Pelaksanaan", c: ["Daftar Ulang: Menyertakan lirik berlabel grup, hadir maksimal 1 jam sebelum jadwal.", "Pelaksanaan: Persiapan di area khusus, membawakan 2 lagu diawali jingle.", "Durasi Penampilan maksimal 10 menit (termasuk jingle).", "Lampu Hijau (00.00-09.00), Kuning (09.00-10.00 = -2 poin), Merah (10.00 ke atas = -5 poin).", "Tampil terlalu singkat/melebihi waktu dikenakan pengurangan nilai."] },
+                    { t: "Kriteria Penilaian", c: ["Vokal dan Lagu (40 Poin): Keutuhan, kejernihan, variasi, kesesuaian backing, tempo, keindahan.", "Terbang/Musik (30 Poin): Irama dasar, akurasi, tempo, dinamika, variasi, harmonisasi.", "Adab dan Syair (30 Poin): Mura'atul kalimat (keaslian), kesiapan, ekspresi, penghayatan."] },
+                    { t: "Tata Tertib & Sanksi", c: ["Berpakaian seragam yang sopan, rapi, bernuansa Islami.", "Kostum tidak mengandung unsur melanggar norma kesopanan.", "Dipanggil 3 kali tidak hadir = dirolling ke belakang dan mendapat pengurangan nilai (-5).", "Dilarang mengganggu penampilan peserta lain.", "Sanksi pelanggaran: Teguran hingga pengurangan nilai."] },
+                    { t: "Penentuan Juara", c: ["Penentuan juara berdasarkan jumlah nilai akhir tertinggi.", "Kategori: Terbaik I, Terbaik II, Terbaik III, dan Jingle Terbaik.", "Pemenang mendapatkan trofi/piala, piagam penghargaan, dan uang pembinaan.", "Tim yang mengundurkan diri uang dikembalikan 50%.", "Juara 1 akan ditampilkan di acara puncak hari santri pada tanggal 22 Oktober 2026."] }
+                ]
+            },
+            dai: {
+                title: "Lomba Da'i Cilik",
+                icon: "fa-microphone", color: "from-orange-400 to-red-500",
+                slides: [
+                    { t: "Tema & Ketentuan Peserta", c: ["Tema: Membentuk Generasi Islami yang Berakhlak Mulia, Percaya Diri, dan Gemar Berdakwah.", "Peserta merupakan siswa/siswi SD/MI atau sederajat.", "Maksimal berusia 12 tahun pada saat pelaksanaan lomba.", "Wajib mendapat rekomendasi dari sekolah (Maksimal 2 peserta per sekolah).", "Wajib melakukan registrasi dan membawa bukti pendaftaran."] },
+                    { t: "Materi Dakwah", c: ["Disampaikan dalam bentuk ceramah agama Islam.", "Tema ceramah: Menggunakan Tema tentang Santri.", "Sesuai usia peserta, bebas unsur provokasi, ujaran kebencian, politik praktis, SARA.", "Diperbolehkan menggunakan dalil Al-Qur'an dan Hadis sebagai penguat."] },
+                    { t: "Teknis Pelaksanaan", c: ["Persiapan: Registrasi ulang, TM, dapat nomor urut. Hadir paling lambat 30 menit sebelum acara.", "Tampil sesuai nomor urut, langsung di hadapan dewan juri.", "Boleh pakai teks untuk persiapan, TAPI dilarang membaca penuh saat tampil.", "Boleh pakai ekspresi/gerakan, namun dilarang menggunakan HP (gadget).", "Durasi tampil: 7 sampai 10 Menit.", "Menit ke-7: tanda peringatan. Menit ke-10: tanda waktu berakhir."] },
+                    { t: "Sistem Penilaian", c: ["Materi dan isi dakwah (Kesesuaian tema, isi, pesan) (25%)", "Penguasaan materi (Tanpa teks penuh, lancar, runtut) (20%)", "Penyampaian/retorika (Menarik audiens, pembukaan, penutupan) (20%)", "Vokal, intonasi, dan artikulasi (15%)", "Ekspresi dan gestur (10%)", "Adab dan penampilan (Sopan, Islami, percaya diri) (10%)"] },
+                    { t: "Tata Tertib & Sanksi", c: ["Berpakaian muslim/muslimah rapi, sopan (laki-laki boleh sarung/peci).", "Dilarang atribut politik/promosi. Properti sederhana diperbolehkan.", "Dipanggil 3 kali tidak hadir tanpa keterangan dapat dinyatakan gugur.", "Pendamping DILARANG memberikan kode/arahan saat lomba berlangsung.", "Melanggar = Teguran, pengurangan nilai, pemberhentian, hingga diskualifikasi."] },
+                    { t: "Penentuan Juara", c: ["Juara ditentukan berdasarkan nilai akhir tertinggi dari seluruh peserta.", "Kategori juara: Juara I, Juara II, dan Juara III.", "Pemenang memperoleh trofi/piala, piagam penghargaan, dan Uang Pembinaan."] }
+                ]
+            },
+            futsal: {
+                title: "Turnamen Futsal",
+                icon: "fa-futbol", color: "from-lime-500 to-green-600",
+                slides: [
+                    { t: "Ketentuan Umum", c: ["Peserta adalah tim perwakilan pondok pesantren atau lembaga.", "Sistem pertandingan menggunakan format kompetisi/gugur sesuai jumlah tim.", "Waktu pertandingan 2 x 10 menit kotor.", "Setiap tim terdiri dari 5 pemain inti dan maksimal 5 pemain cadangan."] },
+                    { t: "Peraturan Pertandingan", c: ["Menggunakan peraturan resmi FIFA Futsal yang disesuaikan.", "Pemain wajib menggunakan sepatu futsal, seragam tim seragam, dan deker (pelindung tulang kering).", "Akumulasi kartu kuning/merah berlaku denda atau sanksi larangan bermain.", "Keputusan wasit di lapangan adalah mutlak dan tidak dapat diganggu gugat."] },
+                    { t: "Sistem Poin & Klasemen", c: ["Menang = 3 Poin, Seri = 1 Poin, Kalah = 0 Poin.", "Penentuan klasemen didasarkan pada: Total Poin, Head-to-Head, Selisih Gol, dan Gol Memasukkan.", "Tim yang melanggar sportivitas (berkelahi/rusuh) akan langsung didiskualifikasi."] }
+                ]
+            }
+        };
+
+        const scoringSchema = {
+            mqk: [{ id: 'qiraah', label: 'Ketepatan Membaca Ibarah', max: 30 }, { id: 'makna', label: 'Ketepatan Makna/Terjemah', max: 25 }, { id: 'isi', label: 'Pemahaman Isi & Maksud', max: 25 }, { id: 'tanya', label: 'Kemampuan Menjawab', max: 10 }, { id: 'adab', label: 'Kelancaran & Adab', max: 10 }],
+            fesban: [{ id: 'vokal', label: 'Vokal dan Lagu', max: 40 }, { id: 'musik', label: 'Terbang/Musik', max: 30 }, { id: 'adab', label: 'Adab dan Syair', max: 30 }, { id: 'pengurangan', label: 'Pengurangan Nilai (Sanksi Waktu/Aturan)', max: 0, min: -100 }],
+            dai: [{ id: 'materi', label: 'Materi & Isi Dakwah', max: 25 }, { id: 'penguasaan', label: 'Penguasaan Materi', max: 20 }, { id: 'retorika', label: 'Penyampaian/Retorika', max: 20 }, { id: 'vokal', label: 'Vokal, Intonasi, Artikulasi', max: 15 }, { id: 'ekspresi', label: 'Ekspresi dan Gestur', max: 10 }, { id: 'adab', label: 'Adab dan Penampilan', max: 10 }],
+            futsal: [{ id: 'poin', label: 'Poin Kemenangan (Menang=3, Seri=1)', max: 3 }, { id: 'gol', label: 'Gol Memasukkan', max: 50 }, { id: 'fairplay', label: 'Nilai Sportivitas / Fair Play', max: 10 }]
+        };
+
+        // ==========================================
+        // 3. KOMPONEN UI UTAMA
+        // ==========================================
+        const Toast = ({ message, type, onClose }) => {
+            useEffect(() => { const timer = setTimeout(onClose, 3500); return () => clearTimeout(timer); }, [onClose]);
+            return (
+                <div className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-[9999999] px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-fade-in-up border ${type === 'error' ? 'bg-red-900/95 border-red-500 text-red-100' : 'bg-brand-900/95 border-brand-400 text-brand-50'} backdrop-blur-md w-max max-w-[90vw]`}>
+                    <i className={`fa-solid ${type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-check'} text-lg`}></i>
+                    <p className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis">{message}</p>
+                </div>
+            );
+        };
+
+        const AppLogo = ({ className = "text-3xl" }) => {
+            const { settings } = useContext(SettingsContext);
+            const isImage = settings.logoUrl.startsWith('http') || settings.logoUrl.startsWith('data:') || settings.logoUrl.endsWith('.png') || settings.logoUrl.endsWith('.jpg');
+            return isImage ? 
+                <img src={settings.logoUrl} alt="Logo" className={`object-cover ${className.includes('text-5xl') ? 'h-20 w-20' : 'h-10 w-10'} rounded-2xl shadow-lg`} /> : 
+                <i className={`fa-solid ${settings.logoUrl || 'fa-mosque'} ${className}`}></i>;
+        };
+
+        const PullToRefresh = ({ onRefresh, children }) => {
+            const [isPulling, setIsPulling] = useState(false);
+            const [pullDistance, setPullDistance] = useState(0);
+            const scrollRef = useRef(null);
+            
+            const handleTouchStart = (e) => {
+                if (scrollRef.current && scrollRef.current.scrollTop === 0) scrollRef.current.setAttribute('data-start-y', e.touches[0].clientY);
+            };
+            const handleTouchMove = (e) => {
+                const startY = scrollRef.current?.getAttribute('data-start-y');
+                if (startY) {
+                    const dist = e.touches[0].clientY - parseFloat(startY);
+                    if (dist > 0 && scrollRef.current.scrollTop === 0) { setIsPulling(true); setPullDistance(Math.min(dist * 0.5, 80)); }
+                }
+            };
+            const handleTouchEnd = async () => {
+                if (pullDistance > 50) { setPullDistance(80); await onRefresh(); }
+                setIsPulling(false); setPullDistance(0);
+                if (scrollRef.current) scrollRef.current.removeAttribute('data-start-y');
+            };
+
+            return (
+                <div className="h-full flex flex-col relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+                    <div style={{ height: pullDistance, opacity: pullDistance / 80 }} className="flex justify-center items-center overflow-hidden transition-all duration-300">
+                        {isPulling && pullDistance < 50 ? <i className="fa-solid fa-arrow-down text-brand-300"></i> : <div className="loader-ring !w-6 !h-6"></div>}
+                    </div>
+                    <div ref={scrollRef} className="flex-1 overflow-y-auto hide-scrollbar relative">{children}</div>
+                </div>
+            );
+        };
+
+        // ==========================================
+        // 4. VIEWS & MODALS (FIXED Z-INDEX)
+        // ==========================================
+        const PublicFeed = ({ onOpenLogin }) => {
+            const { settings } = useContext(SettingsContext);
+            const fileInputRef = useRef(null);
+            const [feeds, setFeeds] = useState([
+                { id: 1, author: 'Panitia Pusat', role: 'ADMIN', text: 'Pendaftaran Telah Dibuka! Segera daftarkan perwakilan pondok pesantren atau sekolah Anda di Festiv-AlRifaie 2.', time: 'Baru saja', isPinned: true },
+                { id: 2, author: 'Seksi Acara', role: 'PANITIA', text: 'Juknis resmi untuk MQK, Fesban, dan Da\'i Cilik sudah dirilis secara lengkap. Silakan login untuk melihat detailnya.', time: '2 jam yang lalu', isPinned: false }
+            ]);
+            const [newPost, setNewPost] = useState('');
+            const [postMedia, setPostMedia] = useState(null);
+
+            const handleMediaSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setPostMedia({ url: reader.result, type: file.type.startsWith('video') ? 'video' : 'image' });
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const handlePostSubmit = (e) => {
+                e.preventDefault();
+                if(!newPost.trim() && !postMedia) return;
+                setFeeds([{ id: Date.now(), author: 'GuestUser', role: 'GUEST', text: newPost, media: postMedia, time: 'Baru saja', isPinned: false }, ...feeds]);
+                setNewPost(''); setPostMedia(null);
+            };
+
+            return (
+                <div className="h-full overflow-y-auto hide-scrollbar pb-36 relative animate-fade-in-up">
+                    <div className="pt-12 pb-10 px-6 text-center relative z-10">
+                        <div className="w-28 h-28 glass-strong rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(16,185,129,0.5)] transform hover:scale-110 transition border border-brand-400/40">
+                            <AppLogo className="text-6xl text-brand-300 relative z-10" />
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4 drop-shadow-2xl">{settings.loginTitle}</h1>
+                        <p className="text-brand-100/90 text-lg font-light max-w-xl mx-auto px-4">Membangun Generasi Santri yang Berilmu, Berakhlak, dan Berprestasi melalui seni dan keilmuan Islam.</p>
+                        <button onClick={onOpenLogin} className="mt-8 bg-gradient-to-r from-brand-500 to-brand-600 text-white px-10 py-4 rounded-full font-black text-lg shadow-[0_10px_30px_rgba(16,185,129,0.5)] hover:scale-105 transition flex items-center gap-4 mx-auto border border-brand-400/50">
+                            <i className="fa-solid fa-right-to-bracket text-xl"></i> Akses Portal
+                        </button>
+                    </div>
+
+                    <div className="max-w-2xl mx-auto px-5 mt-2 space-y-6">
+                        <form onSubmit={handlePostSubmit} className="glass-card rounded-[2rem] p-5 border border-white/20 shadow-lg">
+                            <div className="flex gap-3 items-start">
+                                <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white shrink-0"><i className="fa-solid fa-user"></i></div>
+                                <div className="flex-1">
+                                    <textarea value={newPost} onChange={e=>setNewPost(e.target.value)} placeholder="Bagikan momen keseruan persiapan lomba..." className="w-full bg-transparent text-white focus:outline-none resize-none h-12 text-sm" />
+                                    {postMedia && (
+                                        <div className="relative mb-3 inline-block">
+                                            <button type="button" onClick={()=>setPostMedia(null)} className="absolute -top-2 -right-2 bg-red-500 w-6 h-6 rounded-full text-white"><i className="fa-solid fa-times"></i></button>
+                                            {postMedia.type === 'image' ? <img src={postMedia.url} className="h-32 rounded-xl object-cover border border-white/20" /> : <video src={postMedia.url} className="h-32 rounded-xl border border-white/20" controls />}
+                                        </div>
+                                    )}
+                                    <div className="flex items-center justify-between mt-2 pt-3 border-t border-white/10">
+                                        <input type="file" accept="image/*,video/*" ref={fileInputRef} onChange={handleMediaSelect} className="hidden" />
+                                        <button type="button" onClick={()=>fileInputRef.current.click()} className="text-brand-300 text-sm flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg"><i className="fa-regular fa-image"></i> Foto/Video</button>
+                                        <button type="submit" disabled={!newPost.trim() && !postMedia} className="bg-brand-500 text-white px-5 py-1.5 rounded-full font-bold text-sm disabled:opacity-50 hover:bg-brand-400">Posting</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        {feeds.map(feed => (
+                            <div key={feed.id} className="glass-card rounded-[2rem] p-5 flex flex-col gap-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gray-800 border border-white/20 flex items-center justify-center text-white shrink-0"><i className="fa-solid fa-user-astronaut"></i></div>
+                                    <div><p className="text-white font-bold text-sm">{feed.author} {feed.role==='ADMIN'&&<i className="fa-solid fa-circle-check text-blue-400 text-xs"></i>}</p><p className="text-[11px] text-gray-400">{feed.time}</p></div>
+                                    {feed.isPinned && <i className="fa-solid fa-thumbtack text-brand-400 ml-auto rotate-45"></i>}
+                                </div>
+                                <p className="text-gray-200 text-sm leading-relaxed">{feed.text}</p>
+                                {feed.media && (
+                                    <div className="mt-2 rounded-xl overflow-hidden border border-white/10">
+                                        {feed.media.type === 'image' ? <img src={feed.media.url} className="w-full h-auto max-h-64 object-cover" /> : <video src={feed.media.url} className="w-full h-auto max-h-64 object-cover" controls />}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const HomeView = ({ user }) => {
+            const getGreeting = () => { const h = new Date().getHours(); if (h < 11) return 'Selamat Pagi'; if (h < 15) return 'Selamat Siang'; if (h < 18) return 'Selamat Sore'; return 'Selamat Malam'; };
+
+            return (
+                <div className="pb-36 pt-6 px-5 max-w-4xl mx-auto h-full">
+                    <div className="glass-strong rounded-[2.5rem] p-8 mb-6 relative overflow-hidden border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                        <div className="absolute -right-10 -top-10 text-[10rem] text-white/5 pointer-events-none"><AppLogo /></div>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-white/90 mb-1 relative z-10">{getGreeting()},</h2>
+                        <h3 className="text-3xl sm:text-4xl font-black text-brand-300 mb-6 relative z-10">{user.name}!</h3>
+                        
+                        <div className="bg-white/10 border border-white/20 rounded-2xl p-4 relative z-10 backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <p className="text-[10px] text-gray-300 uppercase tracking-widest font-bold mb-1">Status Pendaftaran</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="relative flex h-3 w-3"><span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${user.status === 'approved' ? 'bg-green-400' : 'bg-yellow-400'}`}></span><span className={`relative inline-flex rounded-full h-3 w-3 ${user.status === 'approved' ? 'bg-green-500' : 'bg-yellow-500'}`}></span></span>
+                                    <p className="text-white font-bold text-sm">{user.status === 'approved' ? 'Aktif & Disetujui' : 'Menunggu Persetujuan'}</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] text-gray-300 uppercase tracking-widest font-bold mb-1">Role Akses</p>
+                                <p className="text-brand-300 font-black text-sm">{user.role}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-4 mb-6">
+                        <div className="flex-1 glass-card p-5 rounded-[2rem] text-center border border-white/10 shadow-lg">
+                            <i className="fa-solid fa-users text-3xl text-brand-400 mb-2 opacity-80"></i>
+                            <p className="text-3xl font-black text-white">125+</p>
+                            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Total Peserta</p>
+                        </div>
+                        <div className="flex-1 glass-card p-5 rounded-[2rem] text-center border border-white/10 shadow-lg">
+                            <i className="fa-solid fa-trophy text-3xl text-yellow-400 mb-2 opacity-80"></i>
+                            <p className="text-3xl font-black text-white">{Object.keys(juknisData).length}</p>
+                            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Cabang Lomba</p>
+                        </div>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-white mb-4 ml-2 flex items-center gap-2"><i className="fa-solid fa-compass text-brand-400"></i> Pintasan Cepat</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {[{t:'Juknis Lomba', i:'fa-book-open', c:'from-blue-500 to-indigo-600'}, {t:'Grup Chat', i:'fa-comments', c:'from-emerald-500 to-teal-600'}, {t:'Pengumuman', i:'fa-bullhorn', c:'from-purple-500 to-fuchsia-600'}, {t:'Jadwal', i:'fa-calendar-day', c:'from-orange-500 to-red-500'}].map((item, idx) => (
+                            <div key={idx} className="glass-card rounded-[2rem] p-5 text-center flex flex-col items-center justify-center gap-4 cursor-pointer group border border-white/10 overflow-hidden relative">
+                                <div className={`absolute inset-0 bg-gradient-to-br ${item.c} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}></div>
+                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.c} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 relative z-10`}>
+                                    <i className={`fa-solid ${item.i} text-xl text-white`}></i>
+                                </div>
+                                <span className="text-white font-bold text-sm relative z-10">{item.t}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // SUPER HIGH Z-INDEX MODALS (z-[999999]) to cover bottom tab bar completely
+        const PenilaianModal = ({ participant, lombaId, onClose, user, showToast, onSuccess }) => {
+            const [formValues, setFormValues] = useState({});
+            
+            const handleInputChange = (id, value, max, min) => {
+                let val = value === '' ? '' : parseInt(value);
+                if (val !== '' && val > max) val = max; if (val !== '' && val < min) val = min;
+                setFormValues(prev => ({ ...prev, [id]: val }));
+            };
+
+            const calculateTotal = () => Object.values(formValues).reduce((acc, curr) => acc + (parseInt(curr)||0), 0);
+
+            const handleSubmitScore = async (e) => {
+                e.preventDefault();
+                const totalScore = calculateTotal();
+                const notes = scoringSchema[lombaId].map(s => `${s.label}: ${formValues[s.id]||0}`).join(' | ');
+                try {
+                    await fetchApi('submitScore', { username: participant.username, competition: lombaId, score: totalScore, notes, judge: user.name });
+                    showToast(`Skor ${totalScore} untuk ${participant.name} disimpan!`); onSuccess(totalScore); onClose();
+                } catch (err) { showToast(err.message, 'error'); }
+            };
+
+            return (
+                <div className="fixed inset-0 z-[999999] flex items-end justify-center animate-fade-in-up sm:items-center">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose}></div>
+                    <div className="w-full sm:max-w-md bg-[#022c22] rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 relative z-10 border border-white/20 shadow-2xl h-[90vh] sm:h-[80vh] flex flex-col">
+                        <button onClick={onClose} className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"><i className="fa-solid fa-times"></i></button>
+                        <div className="mb-6 border-b border-white/10 pb-4 pr-10">
+                            <h3 className="text-2xl font-black text-white">Form Penilaian</h3>
+                            <p className="text-brand-300 font-medium truncate">{participant.name} <span className="text-white/50 text-xs">(@{participant.username})</span></p>
+                        </div>
+                        <div className="flex-1 overflow-y-auto hide-scrollbar space-y-5 pb-28">
+                            {scoringSchema[lombaId].map(schema => (
+                                <div key={schema.id}>
+                                    <label className="block text-[11px] font-bold text-gray-300 mb-2 uppercase">{schema.label}</label>
+                                    <div className="relative flex items-center">
+                                        <input type="number" min={schema.min || 0} max={schema.max} value={formValues[schema.id] ?? ''} onChange={(e) => handleInputChange(schema.id, e.target.value, schema.max, schema.min || 0)} className="w-full pl-5 pr-16 py-4 glass-input rounded-2xl text-2xl font-black text-brand-300" placeholder="0" />
+                                        <span className="absolute right-5 text-white/40 font-bold">/ {schema.max}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-[#022c22]/90 backdrop-blur-xl border-t border-white/10 flex justify-between items-center rounded-b-[2.5rem]">
+                            <div><p className="text-[10px] text-gray-400 font-bold uppercase">Total Skor Akhir</p><p className="text-4xl font-black text-white">{calculateTotal()}</p></div>
+                            <button onClick={handleSubmitScore} className={`px-8 py-4 rounded-2xl font-black text-white bg-gradient-to-r ${juknisData[lombaId].color} hover:scale-105 shadow-lg flex items-center gap-2`}><i className="fa-solid fa-floppy-disk"></i> Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const LombaSlides = ({ lombaId, onClose }) => {
+            const data = juknisData[lombaId];
+            const [currentIdx, setCurrentIdx] = useState(0);
+            const next = () => setCurrentIdx(prev => Math.min(prev + 1, data.slides.length - 1));
+            const prev = () => setCurrentIdx(prev => Math.max(prev - 1, 0));
+
+            return (
+                <div className="fixed inset-0 z-[999999] bg-[#022c22]/95 backdrop-blur-2xl flex flex-col animate-fade-in-up">
+                    <div className={`h-[72px] flex items-center justify-between px-6 bg-gradient-to-r ${data.color} shadow-lg shrink-0`}>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white"><i className={`fa-solid ${data.icon}`}></i></div>
+                            <h3 className="text-white font-black text-lg truncate max-w-[200px]">{data.title}</h3>
+                        </div>
+                        <button onClick={onClose} className="w-10 h-10 bg-black/20 rounded-full text-white flex items-center justify-center"><i className="fa-solid fa-times"></i></button>
+                    </div>
+                    <div className="flex-1 relative flex items-center justify-center p-4">
+                        {data.slides.map((slide, idx) => (
+                            <div key={idx} className={`absolute w-full max-w-xl transition-all duration-700 ${idx === currentIdx ? 'opacity-100 translate-x-0 scale-100 z-10' : idx < currentIdx ? 'opacity-0 -translate-x-full scale-90' : 'opacity-0 translate-x-full scale-90'}`}>
+                                <div className="glass-strong rounded-[2.5rem] p-8 border border-white/20 shadow-2xl">
+                                    <div className="flex flex-col mb-6 border-b border-white/10 pb-5">
+                                        <span className={`w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br ${data.color} text-xl shadow-lg mb-4 font-bold text-white`}>0{idx+1}</span> 
+                                        <h2 className="text-2xl font-extrabold text-white leading-tight">{slide.t}</h2>
+                                    </div>
+                                    <ul className="space-y-4 max-h-[50vh] overflow-y-auto hide-scrollbar pb-10">
+                                        {slide.c.map((text, i) => (
+                                            <li key={i} className="flex items-start gap-4 text-gray-200 text-sm font-medium">
+                                                <div className="mt-1 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i className="fa-solid fa-check text-brand-400 text-xs"></i></div>
+                                                <span>{text}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="h-28 bg-[#022c22]/90 backdrop-blur-xl border-t border-white/10 flex items-center justify-between px-6 shrink-0 z-20 pb-4">
+                        <button onClick={prev} disabled={currentIdx === 0} className={`w-14 h-14 rounded-2xl flex items-center justify-center ${currentIdx === 0 ? 'opacity-30 bg-white/5' : 'bg-white/10 text-white shadow-lg'}`}><i className="fa-solid fa-arrow-left"></i></button>
+                        <div className="flex gap-2.5">
+                            {data.slides.map((_, i) => <div key={i} className={`h-2.5 rounded-full transition-all duration-500 ${i === currentIdx ? `w-10 bg-gradient-to-r ${data.color}` : 'w-3 bg-white/20'}`} />)}
+                        </div>
+                        <button onClick={next} disabled={currentIdx === data.slides.length - 1} className={`w-14 h-14 rounded-2xl flex items-center justify-center ${currentIdx === data.slides.length - 1 ? 'opacity-30 bg-white/5' : `bg-gradient-to-r ${data.color} text-white shadow-lg`}`}><i className="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            );
+        };
+
+        const LombaChat = ({ lombaId, user, onClose }) => {
+            const [messages, setMessages] = useState([]);
+            const [text, setText] = useState('');
+            const scrollRef = useRef(null);
+            const fileInputRef = useRef(null);
+            const data = juknisData[lombaId];
+
+            useEffect(() => { fetchApi('getChats', { lombaId }).then(res => { setMessages(res); setTimeout(() => scrollRef.current?.scrollIntoView(), 100); }); }, [lombaId]);
+
+            const handleSend = async (e, mediaBase64 = null, type = null) => {
+                if (e) e.preventDefault(); if (!text.trim() && !mediaBase64) return;
+                const payload = { lombaId, username: user.name, text, role: user.role, image: type==='image'?mediaBase64:null, video: type==='video'?mediaBase64:null };
+                setText('');
+                const newMsg = await fetchApi('sendMessage', payload);
+                setMessages([...messages, newMsg]); setTimeout(() => scrollRef.current?.scrollIntoView(), 100);
+            };
+
+            const handleMediaSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => handleSend(null, reader.result, file.type.startsWith('video') ? 'video' : 'image');
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            return (
+                <div className="fixed inset-0 z-[999999] bg-[#0f172a] flex flex-col animate-fade-in-up">
+                    <div className={`h-[72px] flex items-center gap-4 px-4 bg-gradient-to-r ${data.color} shadow-lg shrink-0`}>
+                        <button onClick={onClose} className="w-10 h-10 bg-black/20 rounded-full text-white flex items-center justify-center"><i className="fa-solid fa-arrow-left"></i></button>
+                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white"><i className={`fa-solid ${data.icon}`}></i></div>
+                        <div><h3 className="text-white font-bold text-lg leading-tight truncate">Grup {data.title.split('(')[0]}</h3><p className="text-xs text-white/80"><span className="w-2 h-2 inline-block rounded-full bg-green-400 animate-pulse mr-1"></span>Diskusi Terenkripsi</p></div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-5 hide-scrollbar pb-28">
+                        {messages.map((msg, i) => {
+                            const isMe = msg.sender === user.name;
+                            return (
+                                <div key={i} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                                    {!isMe && <span className="text-[11px] font-bold text-gray-400 ml-2 mb-1">{msg.isAdmin && <i className="fa-solid fa-shield-halved text-brand-400 mr-1"></i>}{msg.sender}</span>}
+                                    <div className={`px-4 py-3 max-w-[85%] text-[15px] ${isMe ? 'chat-bubble-right text-white shadow-lg' : 'chat-bubble-left text-gray-100 shadow-md backdrop-blur-md'}`}>
+                                        {msg.image && <img src={msg.image} className="max-w-full rounded-xl mb-2 border border-white/20" />}
+                                        {msg.video && <video src={msg.video} className="max-w-full rounded-xl mb-2 border border-white/20" controls />}
+                                        {msg.text}
+                                        <div className={`text-[10px] mt-1.5 text-right font-medium ${isMe ? 'text-white/70' : 'text-gray-400'}`}>{msg.time} <i className="fa-solid fa-check-double text-blue-200 ml-1"></i></div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        <div ref={scrollRef} className="h-4"></div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-[#0f172a]/90 backdrop-blur-xl border-t border-white/10 z-20 pb-6">
+                        <form onSubmit={e => handleSend(e)} className="flex gap-3 max-w-4xl mx-auto items-center">
+                            <input type="file" accept="image/*,video/*" ref={fileInputRef} onChange={handleMediaSelect} className="hidden" />
+                            <button type="button" onClick={() => fileInputRef.current.click()} className="w-12 h-12 rounded-full bg-white/10 text-brand-300 flex items-center justify-center shadow-inner shrink-0"><i className="fa-solid fa-paperclip text-lg"></i></button>
+                            <input type="text" value={text} onChange={e => setText(e.target.value)} placeholder="Ketik pesan..." className="flex-1 bg-white/10 border border-white/20 rounded-full px-5 py-3.5 text-white focus:outline-none focus:border-brand-400" />
+                            <button type="submit" disabled={!text.trim()} className="w-12 h-12 shrink-0 rounded-full bg-gradient-to-r from-brand-500 to-brand-600 text-white flex items-center justify-center hover:scale-105 disabled:opacity-50"><i className="fa-solid fa-paper-plane text-lg ml-[-2px]"></i></button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const LombaView = ({ setOverlayView }) => (
+            <div className="pb-36 pt-6 px-4 max-w-4xl mx-auto h-full">
+                <h2 className="text-3xl font-black text-white mb-6 text-center drop-shadow-md">Panduan & Diskusi</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                    {Object.entries(juknisData).map(([id, data]) => (
+                        <div key={id} className="glass-card rounded-[2.5rem] overflow-hidden group flex flex-col border border-white/10">
+                            <div className={`h-3 bg-gradient-to-r ${data.color} w-full`}></div>
+                            <div className="p-8 flex-1 flex flex-col justify-center items-center text-center">
+                                <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center bg-gradient-to-br ${data.color} shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}><i className={`fa-solid ${data.icon} text-4xl text-white`}></i></div>
+                                <h3 className="text-2xl font-bold text-white mb-3">{data.title}</h3>
+                                <div className="flex w-full gap-3 mt-auto">
+                                    <button onClick={() => setOverlayView({type:'slide', id})} className="flex-1 glass-strong py-3.5 rounded-2xl text-white font-bold hover:bg-white/20 transition"><i className="fa-solid fa-play mr-2 text-brand-300"></i> Juknis PPT</button>
+                                    <button onClick={() => setOverlayView({type:'chat', id})} className="flex-1 bg-brand-600/40 border border-brand-500/50 py-3.5 rounded-2xl text-brand-50 font-bold hover:bg-brand-500 transition"><i className="fa-regular fa-comments mr-2"></i> Grup Chat</button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const PenilaianView = ({ user, showToast, setOverlayView }) => {
+            const [participants, setParticipants] = useState([]);
+            const [lombaId, setLombaId] = useState('mqk');
+            const [scores, setScores] = useState({});
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => { fetchApi('getUsers').then(res => { setParticipants(res.filter(u => u.role === 'PESERTA' && u.status === 'approved' && (u.competition === lombaId || !u.competition))); setLoading(false); }); }, [lombaId]);
+
+            return (
+                <div className="pb-36 pt-6 px-4 max-w-4xl mx-auto h-full flex flex-col">
+                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3"><i className="fa-solid fa-star-half-stroke text-brand-400"></i> Penilaian Dewan Juri</h2>
+                    <div className="flex flex-nowrap gap-3 mb-6 overflow-x-auto hide-scrollbar pb-2 w-full shrink-0">
+                        {Object.entries(juknisData).map(([id, data]) => (
+                            <button key={id} onClick={() => setLombaId(id)} className={`shrink-0 px-6 py-3 rounded-2xl font-bold transition-all ${lombaId === id ? `bg-gradient-to-r ${data.color} text-white shadow-lg` : 'glass-strong text-gray-300 hover:text-white border border-white/10'}`}>
+                                <i className={`fa-solid ${data.icon} mr-2`}></i> {data.title.split('(')[0]}
+                            </button>
+                        ))}
+                    </div>
+                    {loading ? <div className="text-center py-10"><div className="loader-ring"></div></div> : (
+                        <div className="space-y-4 pb-10">
+                            {participants.length === 0 ? <div className="text-center text-gray-400 py-8 glass-strong rounded-3xl">Belum ada peserta di kategori ini.</div> : participants.map((p, i) => (
+                                <div key={i} className="glass-card rounded-[2rem] p-5 border border-white/10 flex items-center justify-between">
+                                    <div className="flex-1 overflow-hidden mr-4">
+                                        <h3 className="font-bold text-white text-lg truncate">{p.name}</h3>
+                                        <p className="text-xs text-brand-300 font-medium truncate mb-1">@{p.username} {p.instansi ? `• ${p.instansi}` : ''}</p>
+                                        {scores[`${p.username}-${lombaId}`] && <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded border border-green-500/30">Sudah Dinilai</span>}
+                                    </div>
+                                    <div className="flex items-center gap-3 shrink-0">
+                                        {scores[`${p.username}-${lombaId}`] && <span className="bg-green-500/20 text-green-400 px-3 py-1.5 rounded-xl text-sm font-bold border border-green-500/30">{scores[`${p.username}-${lombaId}`]} Poin</span>}
+                                        <button onClick={() => setOverlayView({type: 'penilaian', participant: p, lombaId, onSuccess: (score) => setScores(prev => ({...prev, [`${p.username}-${lombaId}`]: score}))})} className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white bg-gradient-to-br ${juknisData[lombaId].color} hover:scale-105 transition-all shadow-lg`}><i className="fa-solid fa-pen-to-square"></i></button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const JuaraView = () => {
+            const [winners, setWinners] = useState(null);
+            const [loading, setLoading] = useState(true);
+            useEffect(() => { fetchApi('getWinners').then(res => { setWinners(res); setLoading(false); }); }, []);
+
+            const getRankStyle = (rank) => {
+                if(rank === 1) return 'bg-yellow-400 text-yellow-900 shadow-[0_0_15px_rgba(250,204,21,0.5)]';
+                if(rank === 2) return 'bg-gray-300 text-gray-800 shadow-[0_0_15px_rgba(209,213,219,0.5)]';
+                return 'bg-orange-400 text-orange-900 shadow-[0_0_15px_rgba(251,146,60,0.5)]';
+            };
+
+            return (
+                <div className="pb-36 pt-6 px-4 max-w-4xl mx-auto h-full">
+                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3"><i className="fa-solid fa-medal text-brand-400"></i> Rekap Juara Lomba</h2>
+                    {loading ? <div className="text-center py-10"><div className="loader-ring"></div></div> : (
+                        <div className="space-y-8 pb-10">
+                            {Object.entries(juknisData).map(([id, data]) => {
+                                const lombaWinners = winners?.[id] || [];
+                                return (
+                                    <div key={id} className="glass-strong rounded-[2.5rem] p-6 border border-white/20 overflow-hidden relative">
+                                        <div className={`absolute -right-10 -top-10 opacity-10 text-9xl`}><i className={`fa-solid ${data.icon}`}></i></div>
+                                        <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4 relative z-10">
+                                            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${data.color} flex items-center justify-center text-white shadow-lg`}><i className={`fa-solid ${data.icon} text-xl`}></i></div>
+                                            <h3 className="text-xl font-bold text-white">{data.title.split('(')[0]}</h3>
+                                        </div>
+                                        {lombaWinners.length === 0 ? <p className="text-gray-400 text-sm italic text-center py-4 relative z-10">Belum ada rekap data juara.</p> : (
+                                            <div className="space-y-3 relative z-10">
+                                                {lombaWinners.map((w, i) => (
+                                                    <div key={i} className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-inner ${getRankStyle(w.rank)}`}>{w.rank}</div>
+                                                        <div className="flex-1"><p className="font-bold text-white">{w.name}</p><p className="text-xs text-brand-300">{w.instansi}</p></div>
+                                                        <div className="text-right"><p className="text-2xl font-black text-white">{w.score}</p><p className="text-[9px] uppercase tracking-widest text-gray-400">Poin</p></div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const AdminSettingsView = ({ showToast }) => {
+            const { settings, setSettings } = useContext(SettingsContext);
+            const [form, setForm] = useState(settings);
+            const handleSave = (e) => { e.preventDefault(); setSettings(form); localStorage.setItem('sf_settings', JSON.stringify(form)); showToast('Pengaturan UI disimpan.', 'success'); };
+            const handleFileRead = (e, field) => { const file = e.target.files[0]; if(file) { const reader = new FileReader(); reader.onloadend = () => setForm({...form, [field]: reader.result}); reader.readAsDataURL(file); } };
+
+            return (
+                <div className="pb-36 pt-6 px-4 max-w-2xl mx-auto h-full">
+                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3"><i className="fa-solid fa-sliders text-brand-400"></i> Pengaturan Tampilan</h2>
+                    <form onSubmit={handleSave} className="glass-strong rounded-[2.5rem] p-6 space-y-6 border border-white/20">
+                        <div><label className="block text-sm font-bold text-gray-300 mb-2">Teks Sambutan</label><input type="text" value={form.loginTitle} onChange={e=>setForm({...form, loginTitle: e.target.value})} className="w-full px-5 py-4 glass-input rounded-2xl text-lg font-bold" /></div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-300 mb-2">Logo Aplikasi (Upload Galeri / Teks)</label>
+                            <div className="flex gap-3"><input type="text" value={form.logoUrl} onChange={e=>setForm({...form, logoUrl: e.target.value})} className="flex-1 px-5 py-4 glass-input rounded-2xl text-sm" placeholder="URL atau Base64" />
+                            <label className="bg-white/10 hover:bg-white/20 text-white px-5 py-4 rounded-2xl cursor-pointer flex items-center justify-center border border-white/20"><i className="fa-solid fa-upload text-lg"></i><input type="file" accept="image/*" className="hidden" onChange={e => handleFileRead(e, 'logoUrl')} /></label></div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-300 mb-2">Background Utama (Upload Galeri / Teks)</label>
+                            <div className="flex gap-3"><input type="text" value={form.bgUrl} onChange={e=>setForm({...form, bgUrl: e.target.value})} className="flex-1 px-5 py-4 glass-input rounded-2xl text-sm" placeholder="URL atau Base64" />
+                            <label className="bg-white/10 hover:bg-white/20 text-white px-5 py-4 rounded-2xl cursor-pointer flex items-center justify-center border border-white/20"><i className="fa-solid fa-image text-lg"></i><input type="file" accept="image/*" className="hidden" onChange={e => handleFileRead(e, 'bgUrl')} /></label></div>
+                        </div>
+                        <button type="submit" className="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-white px-8 py-4 rounded-2xl font-black text-lg transition shadow-lg hover:scale-105">Simpan Perubahan Visual</button>
+                    </form>
+                </div>
+            );
+        };
+
+        const PenggunaView = ({ showToast }) => {
+            const [users, setUsers] = useState([]);
+            useEffect(() => { fetchApi('getUsers').then(res => setUsers(res)); }, []);
+            const updateStatus = async (username, status) => { await fetchApi('adminSetUserStatus', { username, status }); setUsers(users.map(u => u.username === username ? {...u, status} : u)); showToast(`Status diubah menjadi ${status}`); };
+            
+            return (
+                <div className="pb-36 pt-6 px-4 max-w-4xl mx-auto h-full">
+                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3"><i className="fa-solid fa-users text-brand-400"></i> Kelola Pengguna</h2>
+                    <div className="glass-strong rounded-3xl overflow-hidden border border-white/20">
+                        <table className="w-full text-left text-sm text-gray-200">
+                            <thead className="bg-black/40 text-brand-300"><tr><th className="p-4 font-bold">Pengguna</th><th className="p-4 font-bold">Status</th><th className="p-4 font-bold text-right">Aksi</th></tr></thead>
+                            <tbody className="divide-y divide-white/10">
+                                {users.map((u, i) => (
+                                    <tr key={i} className="hover:bg-white/5">
+                                        <td className="p-4"><div className="font-bold text-white text-base">{u.name}</div><div className="text-xs text-brand-300">@{u.username} - {u.role}</div></td>
+                                        <td className="p-4"><span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${u.status==='approved'?'bg-green-500/20 text-green-400':u.status==='pending'?'bg-yellow-500/20 text-yellow-400':'bg-red-500/20 text-red-400'}`}>{u.status.toUpperCase()}</span></td>
+                                        <td className="p-4 text-right space-x-2 whitespace-nowrap">
+                                            {u.status !== 'approved' && <button onClick={()=>updateStatus(u.username, 'approved')} className="bg-green-500/20 text-green-400 px-3 py-1.5 rounded-lg text-xs font-bold border border-green-500/50">Approve</button>}
+                                            {u.status !== 'rejected' && <button onClick={()=>updateStatus(u.username, 'rejected')} className="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold border border-red-500/50">Tolak</button>}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==========================================
+        // 5. KERNEL UTAMA (AUTH & DASHBOARD)
+        // ==========================================
+        const Dashboard = ({ user, token, onLogout, showToast }) => {
+            const initialMenu = user.menus.includes('Home') ? 'Home' : (user.menus[0] || '');
+            const [activeMenu, setActiveMenu] = useState(initialMenu);
+            const [overlayView, setOverlayView] = useState(null); 
+            const menuIcons = { "Home": "fa-house", "Lomba": "fa-trophy", "Pengguna": "fa-users", "Pengaturan": "fa-sliders", "Penilaian": "fa-star-half-stroke", "Juara": "fa-medal" };
+            const [refreshKey, setRefreshKey] = useState(0);
+
+            const handleRefresh = async () => { await new Promise(r => setTimeout(r, 800)); setRefreshKey(prev => prev + 1); };
+
+            const renderView = () => {
+                switch(activeMenu) {
+                    case 'Home': return <HomeView key={`home-${refreshKey}`} user={user} />;
+                    case 'Lomba': return <LombaView key={`lomba-${refreshKey}`} setOverlayView={setOverlayView} />;
+                    case 'Pengaturan': return <AdminSettingsView key={`set-${refreshKey}`} showToast={showToast} />;
+                    case 'Pengguna': return <PenggunaView key={`user-${refreshKey}`} showToast={showToast} />;
+                    case 'Penilaian': return <PenilaianView key={`nilai-${refreshKey}`} user={user} showToast={showToast} setOverlayView={setOverlayView} />;
+                    case 'Juara': return <JuaraView key={`juara-${refreshKey}`} />;
+                    default: return <div className="text-center p-10 text-white"><i className="fa-solid fa-code text-4xl mb-4 text-brand-400"></i><h2 className="text-2xl font-bold">Segera Hadir</h2></div>;
+                }
+            };
+
+            return (
+                <div className="flex flex-col h-screen relative bg-black/20 backdrop-blur-sm">
+                    <header className="h-[72px] glass-strong flex items-center justify-between px-6 z-20 shrink-0 border-b border-white/10">
+                        <div className="flex items-center gap-3"><AppLogo className="text-2xl text-brand-400" /><h1 className="text-lg font-black text-white tracking-wide hidden sm:block">SantriFest<span className="text-brand-400">26</span></h1></div>
+                        <div className="flex items-center gap-4">
+                            <div className="hidden sm:block text-right mr-2"><p className="text-sm font-bold text-white">{user.name}</p><p className="text-xs text-brand-300 font-bold">{user.role}</p></div>
+                            <button onClick={onLogout} className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 flex items-center justify-center"><i className="fa-solid fa-power-off"></i></button>
+                        </div>
+                    </header>
+                    
+                    <main className="flex-1 overflow-hidden flex flex-col relative">
+                        <PullToRefresh onRefresh={handleRefresh}>
+                            {/* Wrapper Animasi Transisi Modern Page-Enter */}
+                            <div key={activeMenu} className="animate-page-enter h-full">
+                                {renderView()}
+                            </div>
+                        </PullToRefresh>
+                    </main>
+                    
+                    <nav className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-md">
+                        <div className="glass-strong rounded-3xl px-2 py-2.5 flex justify-around items-center shadow-[0_15px_40px_rgba(0,0,0,0.7)] border border-white/20 overflow-x-auto hide-scrollbar">
+                            {user.menus.map((menu) => {
+                                const isActive = activeMenu === menu;
+                                return (
+                                    <button key={menu} onClick={() => setActiveMenu(menu)} className="relative flex flex-col items-center justify-center w-16 h-14 rounded-2xl transition-all z-10 group shrink-0">
+                                        <i className={`fa-solid ${menuIcons[menu] || 'fa-circle'} text-[22px] transition-all duration-300 ${isActive ? 'text-brand-400 -translate-y-1 drop-shadow-md' : 'text-gray-400 group-hover:text-gray-200'}`}></i>
+                                        <span className={`text-[10px] font-bold transition-all duration-300 absolute bottom-1 ${isActive ? 'opacity-100 text-white' : 'opacity-0 translate-y-2'}`}>{menu === 'Pengaturan' ? 'Setelan' : menu}</span>
+                                        {isActive && <div className="absolute inset-0 bg-white/10 rounded-2xl shadow-inner border border-white/10 scale-90"></div>}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </nav>
+
+                    {/* ROOT LEVEL OVERLAYS (Z-INDEX 999999 to cover bottom nav) */}
+                    {overlayView?.type === 'slide' && <LombaSlides lombaId={overlayView.id} onClose={() => setOverlayView(null)} />}
+                    {overlayView?.type === 'chat' && <LombaChat lombaId={overlayView.id} user={user} onClose={() => setOverlayView(null)} />}
+                    {overlayView?.type === 'penilaian' && <PenilaianModal participant={overlayView.participant} lombaId={overlayView.lombaId} onClose={() => setOverlayView(null)} user={user} showToast={showToast} onSuccess={overlayView.onSuccess} />}
+                </div>
+            );
+        };
+
+        const AuthModal = ({ isOpen, onClose, onLogin, showToast }) => {
+            const [isLogin, setIsLogin] = useState(true);
+            const [formData, setFormData] = useState({ username: '', password: '', name: '' });
+
+            if (!isOpen) return null;
+            const handleSubmit = async (e) => { e.preventDefault(); try { const res = await fetchApi(isLogin ? 'login' : 'register', formData); if (isLogin) onLogin(res); else { showToast(res.message, 'success'); setIsLogin(true); } } catch (err) { showToast(err.message, 'error'); } };
+
+            return (
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose}></div>
+                    <div className="w-full max-w-md glass-strong rounded-[2.5rem] p-8 relative z-10 animate-zoom-in border border-white/20 shadow-2xl">
+                        <button onClick={onClose} className="absolute top-5 right-5 text-gray-400 hover:text-white w-10 h-10 rounded-full flex items-center justify-center"><i className="fa-solid fa-times"></i></button>
+                        <div className="text-center mb-8"><AppLogo className="text-5xl text-brand-300 mb-4 inline-block drop-shadow-lg" /><h2 className="text-3xl font-black text-white tracking-tight">{isLogin ? 'Login Portal' : 'Daftar Baru'}</h2></div>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {!isLogin && (<div className="relative"><i className="fa-regular fa-id-card absolute left-5 top-4 text-brand-300 text-lg"></i><input type="text" required className="w-full pl-14 pr-4 py-4 glass-input rounded-2xl font-medium" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Nama / Instansi" /></div>)}
+                            <div className="relative"><i className="fa-regular fa-user absolute left-5 top-4 text-brand-300 text-lg"></i><input type="text" required minLength={3} className="w-full pl-14 pr-4 py-4 glass-input rounded-2xl font-medium" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} placeholder="Username" /></div>
+                            <div className="relative"><i className="fa-solid fa-lock absolute left-5 top-4 text-brand-300 text-lg"></i><input type="password" required minLength={3} className="w-full pl-14 pr-4 py-4 glass-input rounded-2xl font-medium" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} placeholder="Password" /></div>
+                            <button type="submit" className="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-white font-black text-lg py-4 rounded-2xl transition shadow-lg mt-6 hover:scale-105">{isLogin ? 'Masuk' : 'Daftar Sekarang'}</button>
+                        </form>
+                        <div className="mt-6 text-center text-sm font-medium">
+                            <span className="text-gray-400">{isLogin ? 'Belum punya akun?' : 'Sudah mendaftar?'}</span>
+                            <button onClick={() => setIsLogin(!isLogin)} className="ml-2 text-brand-300 font-bold hover:text-white underline decoration-brand-300/50 underline-offset-4">{isLogin ? 'Buat Akun' : 'Login disini'}</button>
+                            <p className="text-[10px] text-gray-500 mt-4">(Gunakan admin / admin123 jika API belum aktif)</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [toast, setToast] = useState(null);
+            const [showAuthModal, setShowAuthModal] = useState(false);
+            const [settings, setSettings] = useState(() => { const saved = localStorage.getItem('sf_settings'); return saved ? JSON.parse(saved) : defaultSettings; });
+            const [authState, setAuthState] = useState(() => { const saved = localStorage.getItem('sf_auth'); return saved ? JSON.parse(saved) : { token: null, user: null }; });
+
+            const showToast = (message, type = 'success') => setToast({ message, type });
+            const handleLogin = (data) => { const newState = { token: data.token, user: data }; setAuthState(newState); localStorage.setItem('sf_auth', JSON.stringify(newState)); setShowAuthModal(false); };
+            const handleLogout = () => { setAuthState({ token: null, user: null }); localStorage.removeItem('sf_auth'); };
+
+            return (
+                <SettingsContext.Provider value={{ settings, setSettings }}>
+                    <div className="bg-dynamic" style={{ backgroundImage: `url(${settings.bgUrl})` }}></div>
+                    <div className="bg-overlay"></div>
+                    <div className="h-full relative">
+                        {authState.token ? <Dashboard user={authState.user} token={authState.token} onLogout={handleLogout} showToast={showToast} /> : <PublicFeed onOpenLogin={() => setShowAuthModal(true)} />}
+                        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} onLogin={handleLogin} showToast={showToast} />
+                        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+                    </div>
+                </SettingsContext.Provider>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

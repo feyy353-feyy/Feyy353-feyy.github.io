@@ -1,0 +1,22 @@
+{
+"name": "Santri Fest 2026",
+"short_name": "SantriFest",
+"description": "Aplikasi PWA Resmi Festiv-AlRifaie 2 (MQK, Fesban, Da'i Cilik).",
+"start_url": "index.html",
+"display": "standalone",
+"background_color": "#022c22",
+"theme_color": "#064e3b",
+"orientation": "portrait-primary",
+"icons": [
+{
+"src": "233599.png",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "233599.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
+}
